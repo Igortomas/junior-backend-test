@@ -9,6 +9,7 @@ use Tests\TestCase;
 
 class CreateContactsTest extends TestCase
 {
+    use RefreshDatabase;
     #[Test]
     public function it_should_be_able_to_create_a_new_contact(): void
     {
@@ -39,6 +40,7 @@ class CreateContactsTest extends TestCase
         ];
 
         $response = $this->post('/contacts', $data);
+                 $response->dump(); // Veja o que retorna
 
         $response->assertSessionHasErrors([
             'name',

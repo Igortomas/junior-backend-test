@@ -6,6 +6,14 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class ContactsRequest extends FormRequest
 {
+
+    public function prepareForValidation(): void
+    {
+        $this->merge([
+            'phone' => preg_replace('/\D/', '', $this->phone),
+        ]);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -14,7 +22,9 @@ class ContactsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => ['required', 'string', 'min:3'],
+            'email' => ['required', 'email', 'unique:contacts,email'],
+            'phone' => ['required', 'digits_between:10,11'],
         ];
     }
 }
