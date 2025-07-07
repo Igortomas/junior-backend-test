@@ -6,6 +6,7 @@ use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\VerifyCsrfToken;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -15,11 +16,16 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        $middleware->alias([
+            'inertia' => HandleInertiaRequests::class,
+        ]);
+
         $middleware->group('web', [
             HandlePrecognitiveRequests::class,
             StartSession::class,
             ShareErrorsFromSession::class,
-            VerifyCsrfToken::class, // ✅ AQUI estamos aplicando de verdade o middleware
+            VerifyCsrfToken::class,
+            HandleInertiaRequests::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
