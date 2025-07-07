@@ -22,17 +22,18 @@ class ContactsRequest extends FormRequest
      */
     public function rules(): array
     {
-        $contactId = $this->route('id'); // ou 'contact' dependendo da rota
-
+        $contactId = $this->route('id');
+        
         return [
-            'name' => ['required', 'string'],
+            'name' => ['required', 'string', 'min:3'],
             'email' => [
                 'required',
                 'email',
                 Rule::unique('contacts', 'email')->ignore($contactId),
             ],
-            'phone' => ['required'],
+            'phone' => ['required', 'digits_between:10,11'],
         ];
+        
     }
 
     public function messages(): array
