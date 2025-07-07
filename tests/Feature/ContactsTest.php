@@ -40,7 +40,6 @@ class CreateContactsTest extends TestCase
         ];
 
         $response = $this->post('/contacts', $data);
-                 $response->dump(); // Veja o que retorna
 
         $response->assertSessionHasErrors([
             'name',
