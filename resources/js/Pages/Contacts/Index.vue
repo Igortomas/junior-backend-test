@@ -27,7 +27,7 @@
         <div>
           <div class="font-semibold">{{ contact.name }}</div>
           <div class="text-sm text-gray-600">{{ contact.email }}</div>
-          <div class="text-sm text-gray-600">{{ contact.phone }}</div>
+          <div class="text-sm text-gray-600">{{ formatPhone(contact.phone) }}</div>
         </div>
         <div class="flex space-x-3">
           <Link
@@ -62,6 +62,22 @@
     if (confirm('Deseja realmente excluir este contato?')) {
       router.delete(`/${id}`)
     }
+  }
+
+  function formatPhone(phone) {
+    if (!phone) return '';
+    
+    const cleaned = phone.replace(/\D/g, '');
+
+    if (cleaned.length === 11) {
+      return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(7)}`;
+    }
+
+    if (cleaned.length === 10) {
+      return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 6)}-${cleaned.slice(6)}`;
+    }
+
+    return phone;
   }
 
 

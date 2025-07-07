@@ -32,6 +32,7 @@
         <input
           type="text"
           v-model="form.phone"
+          @input="applyPhoneMask"
           class="w-full border rounded px-3 py-2"
         />
         <span v-if="form.errors.phone" class="text-red-500 text-sm">
@@ -62,11 +63,23 @@
     },
   })
 
+  function formatPhone(value) {
+    let digits = value.replace(/\D/g, '')
+
+    if (digits.length >= 11) {
+      return digits.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3')
+    } else if (digits.length >= 10) {
+      return digits.replace(/^(\d{2})(\d{4})(\d{4})$/, '($1) $2-$3')
+    }
+
+    return value
+  }
+
   // Se tiver contact (edição), preenche os campos; senão (criação), inicializa em branco
   const form = useForm({
     name: props.contact?.name || '',
     email: props.contact?.email || '',
-    phone: props.contact?.phone || '',
+    phone: props.contact?.phone ? formatPhone(props.contact.phone) : '',
   })
 
   function submit() {
@@ -75,5 +88,23 @@
     } else {
       form.post('/')
     }
+  }
+
+  function applyPhoneMask(e) {
+    let value = e.target.value.replace(/\D/g, '');
+
+    if (value.length > 11) value = value.slice(0, 11);
+
+    if (value.length >= 11) {
+      value = value.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3');
+    } else if (value.length >= 6) {
+      value = value.replace(/^(\d{2})(\d{4})(\d{0,4})$/, '($1) $2-$3');
+    } else if (value.length >= 3) {
+      value = value.replace(/^(\d{2})(\d{0,5})$/, '($1) $2');
+    } else if (value.length >= 1) {
+      value = value.replace(/^(\d{0,2})$/, '($1');
+    }
+
+    form.phone = value;
   }
 </script>
